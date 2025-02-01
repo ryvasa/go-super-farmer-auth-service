@@ -10,7 +10,7 @@ type Router interface {
 
 func NewRoutes(handlers *handler.Handlers) *gin.Engine {
 	r := gin.Default()
-
+	r.LoadHTMLGlob("templates/*")
 	NewAuthRoutes(r, handlers.AuthHandler)
 
 	return r

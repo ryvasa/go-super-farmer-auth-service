@@ -12,12 +12,13 @@ import (
 	"github.com/ryvasa/go-super-farmer-auth-service/internal/usecase"
 	"github.com/ryvasa/go-super-farmer-auth-service/pkg/database"
 	"github.com/ryvasa/go-super-farmer-auth-service/pkg/env"
+	"github.com/ryvasa/go-super-farmer-auth-service/pkg/oauth"
 )
 
 var allSet = wire.NewSet(
 	// Infrastructure
 	env.LoadEnv,
-
+	oauth.NewOauth,
 	database.NewPostgres,
 
 	// Repository

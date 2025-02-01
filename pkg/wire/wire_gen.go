@@ -15,18 +15,20 @@ import (
 	"github.com/ryvasa/go-super-farmer-auth-service/internal/usecase"
 	"github.com/ryvasa/go-super-farmer-auth-service/pkg/database"
 	"github.com/ryvasa/go-super-farmer-auth-service/pkg/env"
+	"github.com/ryvasa/go-super-farmer-auth-service/pkg/oauth"
 )
 
 // Injectors from wire.go:
 
 func InitializeAuthApp() (*app.AuthApp, error) {
-	authHandler := handler.NewAuthHandlerImpl()
-	handlers := handler.NewHandlers(authHandler)
-	engine := route.NewRoutes(handlers)
 	envEnv, err := env.LoadEnv()
 	if err != nil {
 		return nil, err
 	}
+	config := oauth.NewOauth(envEnv)
+	authHandler := handler.NewAuthHandlerImpl(config)
+	handlers := handler.NewHandlers(authHandler)
+	engine := route.NewRoutes(handlers)
 	db, err := database.NewPostgres(envEnv)
 	if err != nil {
 		return nil, err
@@ -37,4 +39,4 @@ func InitializeAuthApp() (*app.AuthApp, error) {
 
 // wire.go:
 
-var allSet = wire.NewSet(env.LoadEnv, database.NewPostgres, repository.NewAuthRepositoryImpl, usecase.NewAuthUsecaseImpl, handler.NewAuthHandlerImpl, app.NewApp, route.NewRoutes, handler.NewHandlers)
+var allSet = wire.NewSet(env.LoadEnv, oauth.NewOauth, database.NewPostgres, repository.NewAuthRepositoryImpl, usecase.NewAuthUsecaseImpl, handler.NewAuthHandlerImpl, app.NewApp, route.NewRoutes, handler.NewHandlers)

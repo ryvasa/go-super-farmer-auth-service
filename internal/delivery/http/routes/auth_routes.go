@@ -11,5 +11,7 @@ type AuthRoutes struct {
 }
 
 func NewAuthRoutes(router *gin.Engine, handler handler.AuthHandler) {
+	router.GET("/", handler.Home)
 	router.GET("/login", handler.GoogleLogin)
+	router.GET("/redirect", handler.Redirect)
 }
